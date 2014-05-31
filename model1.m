@@ -1,4 +1,4 @@
-function mod = model1 (fs, f0, alfa, N_mod,SNR, N_impl)
+function [mod,sig] = model1 (fs, f0, alfa, N_mod,SNR, N_impl)
 %model1 Generates a model signal 
 %   model1 (fs, f0, alfa, N_mod,SNR, N_impl) generates a model 
 %   that is a sum of sinusoidal components. Output is N_mod samples.
