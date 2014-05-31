@@ -12,12 +12,12 @@ function [freqs,alphas] = SProny(signal, fs, p, N_samp,fig_mode, hist_mode, file
 %               should be 2*n, where n - number of sinusoidals)
 %   N_samp      - number of samples to use for estimation
 %   fig_mode    - to plot or not to plot roots of polynomial, 
-%               if fig_mode~=0, then function plots roots on figure(10*i_impl+fig_mode)
+%               if fig_mode~=0, then function plots roots on figure(10*i_impl+1)
 %               roots are plotted for each segment, number of roots is equal to p
 %               all roots of all segments are plotted on one figure 
 %   hist_mode   - to plot or not to plot histogram of frequencies
 %               if hist_mode~=0, then function plots freqs of each impl on 
-%               figure(10*(N_impl-1)+hist_mode)
+%               figure(10*i_impl+2)
 %   filename    - name of file to save freqs, if filename=0, then not saved 
 %   
 %   Outputs:
@@ -43,6 +43,19 @@ alphas=zeros(N_segm,p/2,N_impl); % for each segment p/2 estimates
                                       
 for i_impl=1:N_impl
     
+    if fig_mode~=0  %creates figure to plot roots 
+        figure(10*i_impl+1);
+        hold on
+        x=-2:0.00001:2; y=0*x; plot(x,y) % axes
+        y=-2:0.00001:2; x=0*y; plot(x,y) 
+        % lines, that are borders of a segment where should be frequency 
+        % x=-2:0.00001:2; y=2*pi*f1*x/Fs; plot(x,y)
+        % x=-2:0.00001:2; y=2*pi*f2*x/Fs; plot(x,y) 
+        x=-1:0.00001:1; y=sqrt(1-x.^2); plot(x,y) % unit circle
+        y=-sqrt(1-x.^2); plot(x,y)
+        xlim([-2 2]); ylim([-2 2]);
+    end
+    
     for i_segm=1:N_segm    
         S=zeros(N_samp,1);  %segment to analyze 
         for k=1:N_samp      %loop to obtain segment S
@@ -63,21 +76,10 @@ for i_impl=1:N_impl
 
         % roots of characteristic polynomial 
         A=[1, transpose(apf(1:p))];
-        r=roots(A)
+        r=roots(A);
 
         if fig_mode~=0              %plot roots
-            figure(10*i_impl+fig_mode);
-            hold on
-            x=-2:0.00001:2; y=0*x; plot(x,y) % axes
-            y=-2:0.00001:2; x=0*y; plot(x,y) 
-            % lines, that are borders of a segment where should be frequency 
-            % x=-2:0.00001:2; y=2*pi*f1*x/Fs; plot(x,y)
-            % x=-2:0.00001:2; y=2*pi*f2*x/Fs; plot(x,y) 
-            x=-1:0.00001:1; y=sqrt(1-x.^2); plot(x,y) % unit circle
-            y=-sqrt(1-x.^2); plot(x,y) 
-
-            plot(r, 'k+')      % plot roots, 'k' stands for black colour
-            xlim([-2 2]); ylim([-2 2]); 
+            plot(r, 'k.')      % plot roots, 'k' stands for black colour
         end
 
         kk=1;
@@ -96,14 +98,16 @@ for i_impl=1:N_impl
     end
     
     if hist_mode~=0 
-        figure(10*i_impl+hist_mode);
-        hist(freqs(:,1,i_impl), 1:50:50000);
+        figure(10*i_impl+2);
+        hist(freqs(:,:,i_impl), 1:50:50000);
     end
     
 end
 
 if filename~=0
-    xlswrite(filename, freqs(:,:,1)); % saves only first implem
+    for i_impl=1:N_impl
+    xlswrite(filename, freqs(:,:,i_impl),i_impl); % saves each implem in a sheet
+    end
 end
 
 end
