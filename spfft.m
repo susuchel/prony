@@ -38,7 +38,7 @@ if fig_mode~=0
     spnorm=zeros(size(sp));
     spmax=max(sp);
     for k=1:size(sp,2) 
-        spnorm(:,k)=sp(:,k)/max(1,k);
+        spnorm(:,k)=sp(:,k)/spmax(1,k);
     end
     figure(fig_mode);
     plot(ffs,spnorm);
