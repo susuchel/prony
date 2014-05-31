@@ -1,11 +1,19 @@
 function [sp,ffs] = spfft (fs,signal,fig_mode)
-% spfft (fs,signal,fig_mode) FFT with required parameters
-%   fs - sampling frequency 
-%   signal - signal to analyze, must be a column, if signal is a matrix, 
-%   then fft will be applied to each coloumn
-%   fig_mode - variable that tells whether to plot or not to plot 
-%   if fig_mode=0, then it do not plot a graph, in other case it plots
-%   on figure(fig_mode)
+% spfft FFT with required parameters
+%   spfft (fs,signal,fig_mode)
+%   
+%   Inputs:
+%   fs          - sampling frequency 
+%   signal      - signal to analyze, must be a column, if signal is a 
+%               matrix, then fft will be applied to each coloumn
+%   fig_mode    - variable that tells whether to plot or not to plot 
+%               if fig_mode=0, then it do not plot a graph, in other case 
+%               it plots on figure(fig_mode)
+%
+%   Outputs:
+%   sp      - Square of FFT spectrum of a signal (y-axis)
+%   ffs     - Frequencies (x-axis)
+
 
 qwe=signal;
 [a,b]=size(qwe); % a is number of rows, b is number of columns
