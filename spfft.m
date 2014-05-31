@@ -4,7 +4,8 @@ function [sp,ffs] = spfft (fs,signal,fig_mode)
 %   signal - signal to analyze, must be a column, if signal is a matrix, 
 %   then fft will be applied to each coloumn
 %   fig_mode - variable that tells whether to plot or not to plot 
-%   if fig_mode=0 or =false, then it do not plot a graph
+%   if fig_mode=0, then it do not plot a graph, in other case it plots
+%   on figure(fig_mode)
 
 qwe=signal;
 [a,b]=size(qwe); % a is number of rows, b is number of columns
@@ -25,13 +26,13 @@ sp=Pyy(1:Nfft/2,:);
 ffs=ff(1:Nfft/2)/1000;
 
 
-if fig_mode ~=false
+if fig_mode~=0
     spnorm=zeros(size(sp));
     spmax=max(sp);
     for k=1:size(sp,2) 
         spnorm(:,k)=sp(:,k)/max(1,k);
     end
-    figure(1);
-    plot(ffs/1000,sp/max(sp));
+    figure(fig_mode);
+    plot(ffs,spnorm);
 end
 end
