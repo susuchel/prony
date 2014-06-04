@@ -48,9 +48,12 @@ a_op=alfa;
 n_freq=length(freq_op); % a number of components
 t_mod=(0:1/fs:(N_mod-1)/fs); % descrete time
 
+A_mod=zeros(1,n_freq);  
+fi_mod=zeros(1,n_freq);
 for k=1:n_freq 
     A_mod(1,k)=0.0249; % magnitudes of all components are same 
     fi_mod(1,k)=0; % initial phases of components are same and equal to zero
+    % further idea is to use random A_mod and fi_mod
 end
 
 mods=0; % corresponds to the model without noise
