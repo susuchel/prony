@@ -1,5 +1,5 @@
 function f_est = weightaver( freqs,segSNR )
-%UNTITLED3 Summary of this function goes here
+%weightaver Takes weighted average of f estimate in MProny
 %   Detailed explanation goes here
 
 f_est=sum(freqs.*segSNR)/sum(segSNR);
