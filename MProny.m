@@ -1,4 +1,4 @@
-function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,fig_mode, hist_mode, filename)
+function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,eps,fig_mode, hist_mode, filename)
 %MProny Modified Prony procedure 
 %   Calculates frequencies and damping factors of a signal
 %   Uses least squares procedure for a signal
@@ -16,6 +16,7 @@ function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,fig_mode, 
 %   q           - expected number of exponentials (for real signals 
 %               should be 2*n, where n - number of sinusoidals)
 %   N_samp      - number of samples to use for estimation
+%   eps         - epsilon, difference btw roots of 'A' and 'B'
 %   fig_mode    - to plot or not to plot roots of polynomial, 
 %               if fig_mode~=0, then function plots roots on figure(10*i_obs+1)
 %               roots are plotted for each segment, number of roots is equal to p
@@ -115,42 +116,42 @@ for i_obs=1:N_obs
             plot(real(conjr), imag(conjr), 'k.', 'MarkerSize', 5) 
         end
         
-% TODO: add choosing of correct roots        
-%         chosen=0;       % for chosen roots of B (imag>0 and abs>1) 
-%         ii=1; iii=1;    %     
-% 
-%         for k=1:length(conjr)
-%             if imag(conjr(k))>0
-%                 implus(ii)=conjr(k);  
-%                 if abs(implus(ii))>1      
-%                 chosen(iii)=implus(ii); 
-%                 iii=iii+1;
-%                 end
-%                 ii=ii+1;
-%             end
-%         end
         
-        
-        kk=1;
-        for ii=1:length(r)
-           if imag(r(ii))>0     
-                if atan(imag(r(ii))/real(r(ii)))/(2*pi*1/fs)>=0
-                    freqs(i_segm,kk,i_obs)=atan(imag(r(ii))/real(r(ii)))/(2*pi*1/fs);
-                    alphas(i_segm,kk,i_obs)=-log(sqrt(imag(r(ii))*imag(r(ii))+real(r(ii))*real(r(ii))))/(1/fs);
-                else
-                    freqs(i_segm,kk,i_obs)=fs/2+atan(imag(r(ii))/real(r(ii)))/(2*pi*1/fs);
-                    alphas(i_segm,kk,i_obs)=-log(sqrt(imag(r(ii))*imag(r(ii))+real(r(ii))*real(r(ii))))/(1/fs);
+        chosen=0;       % for chosen roots of B (imag>0 and abs>1) 
+        implus=0;
+        ii=1; iii=1;        
+
+        for k=1:length(conjr)
+            if imag(conjr(k))>0
+                implus(ii)=conjr(k);  
+                if abs(implus(ii))>1      
+                    chosen(iii)=implus(ii); 
+                    iii=iii+1;
                 end
-           kk=kk+1;
-           end
+                ii=ii+1;
+            end
+        end
+        
+        for kk=1:length(chosen)
+            for ii=1:length(r)
+                if abs(chosen(kk)*r(ii)-1)<eps   % choose true roots
+                    if atan(imag(r(ii)')/real(r(ii)'))/(2*pi*1/fs)>=0
+                        freqs(i_segm,kk,i_obs)=atan(imag(r(ii)')/real(r(ii)'))/(2*pi*1/fs);
+                        alphas(i_segm,kk,i_obs)=-log(sqrt(imag(r(ii)')*imag(r(ii)')+real(r(ii)')*real(r(ii)')))/(1/fs);
+                    else
+                        freqs(i_segm,kk,i_obs)=fs/2+atan(imag(r(ii)')/real(r(ii')))/(2*pi*1/fs);
+                        alphas(i_segm,kk,i_obs)=-log(sqrt(imag(r(ii)')*imag(r(ii)')+real(r(ii)')*real(r(ii)')))/(1/fs);
+                    end
+           	
+                end
+            end
         end
     end
     
-    if hist_mode~=0 
+    if hist_mode~=0
         figure(10*i_obs+2);
         hist(freqs(:,:,i_obs), 1:50:50000);
     end
-    
 end
 
 if filename~=0
