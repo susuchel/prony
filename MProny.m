@@ -52,33 +52,30 @@ for i_obs=1:N_obs
     
     if fig_mode~=0  %creates figure to plot roots 
         figure(10*i_obs+1);
-        subplot(1,2,1); % to plot roots of A
-        hold on
-        x=-2:0.00001:2; y=0*x; plot(x,y) % axes
-        y=-2:0.00001:2; x=0*y; plot(x,y) 
-        % lines, that are borders of a segment where should be frequency 
-        % x=-2:0.00001:2; y=2*pi*f1*x/Fs; plot(x,y)
-        % x=-2:0.00001:2; y=2*pi*f2*x/Fs; plot(x,y) 
-        x=-1:0.00001:1; y=sqrt(1-x.^2); plot(x,y) % unit circle
-        y=-sqrt(1-x.^2); plot(x,y)
-        xlim([-2 2]); ylim([-2 2]);
-        z_accA=[exp(-610/fs+1i*2*pi*13853/fs),exp(-610/fs-1i*2*pi*13853/fs), exp(-610/fs+1i*2*pi*44310/fs), exp(-610/fs-1i*2*pi*44310/fs)]; % true roots
-        %z_accA=[exp(-610/fs+1i*2*pi*13853/fs),exp(-610/fs-1i*2*pi*13853/fs)];
-        plot(z_accA,'k^', 'MarkerSize', 12)
         
-        subplot(1,2,2); % to plot roots of B
+        % to plot roots of A
+        subplot(1,2,1); 
         hold on
-        x=-2:0.00001:2; y=0*x; plot(x,y) % axes
+        % plot axis
+        x=-2:0.00001:2; y=0*x; plot(x,y) 
         y=-2:0.00001:2; x=0*y; plot(x,y) 
-        % lines, that are borders of a segment where should be frequency 
-        % x=-2:0.00001:2; y=2*pi*f1*x/Fs; plot(x,y)
-        % x=-2:0.00001:2; y=2*pi*f2*x/Fs; plot(x,y) 
-        x=-1:0.00001:1; y=sqrt(1-x.^2); plot(x,y) % unit circle
+        % plot unit circle
+        x=-1:0.00001:1; 
+        y=sqrt(1-x.^2); plot(x,y) 
         y=-sqrt(1-x.^2); plot(x,y)
         xlim([-2 2]); ylim([-2 2]);
-        z_accB=[exp(610/fs+1i*2*pi*13853/fs), exp(610/fs-1i*2*pi*13853/fs), exp(610/fs+1i*2*pi*44310/fs), exp(610/fs-1i*2*pi*44310/fs)];
-        %z_accB=[exp(610/fs+1i*2*pi*13853/fs), exp(610/fs-1i*2*pi*13853/fs)];
-        plot(z_accB,'k^', 'MarkerSize', 12)
+                    
+        % to plot roots of B
+        subplot(1,2,2); 
+        hold on
+        % plot axis
+        x=-2:0.00001:2; y=0*x; plot(x,y) 
+        y=-2:0.00001:2; x=0*y; plot(x,y) 
+        % plot unit circle
+        x=-1:0.00001:1; 
+        y=sqrt(1-x.^2); plot(x,y) 
+        y=-sqrt(1-x.^2); plot(x,y)
+        xlim([-2 2]); ylim([-2 2]);
     end
     
     for i_segm=1:N_segm    
@@ -118,7 +115,7 @@ for i_obs=1:N_obs
             plot(real(conjr), imag(conjr), 'k.', 'MarkerSize', 5) 
         end
         
-        
+% TODO: add choosing of correct roots        
 %         chosen=0;       % for chosen roots of B (imag>0 and abs>1) 
 %         ii=1; iii=1;    %     
 % 
