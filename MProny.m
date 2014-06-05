@@ -30,7 +30,7 @@ function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,fig_mode, 
 %   where L=N_samp stands for number of segments, N=q/2 is number of 
 %   frequencies (may be of different size), M=size(signal,2) is number of 
 %   observations  
-%   alphas  - estimates damping factors
+%   alphas  - estimated damping factors, absolute values (positive)
 %   segSNR  - SNR of each segment
 %
 %   The function estimates frequencies within a segment of N_samp length,
@@ -62,8 +62,9 @@ for i_obs=1:N_obs
         x=-1:0.00001:1; y=sqrt(1-x.^2); plot(x,y) % unit circle
         y=-sqrt(1-x.^2); plot(x,y)
         xlim([-2 2]); ylim([-2 2]);
-        z_accA=[exp(-610/fs+1i*2*pi*13853/fs),exp(-610/fs-1i*2*pi*13853/fs)]; % true roots
-        plot(z_accA,'k+', 'MarkerSize', 12)
+        z_accA=[exp(-610/fs+1i*2*pi*13853/fs),exp(-610/fs-1i*2*pi*13853/fs), exp(-610/fs+1i*2*pi*44310/fs), exp(-610/fs-1i*2*pi*44310/fs)]; % true roots
+        %z_accA=[exp(-610/fs+1i*2*pi*13853/fs),exp(-610/fs-1i*2*pi*13853/fs)];
+        plot(z_accA,'k^', 'MarkerSize', 12)
         
         subplot(1,2,2); % to plot roots of B
         hold on
@@ -75,8 +76,9 @@ for i_obs=1:N_obs
         x=-1:0.00001:1; y=sqrt(1-x.^2); plot(x,y) % unit circle
         y=-sqrt(1-x.^2); plot(x,y)
         xlim([-2 2]); ylim([-2 2]);
-        z_accB=[exp(610/fs+1i*2*pi*13853/fs), exp(610/fs-1i*2*pi*13853/fs)];
-        plot(z_accB,'k+', 'MarkerSize', 12)
+        z_accB=[exp(610/fs+1i*2*pi*13853/fs), exp(610/fs-1i*2*pi*13853/fs), exp(610/fs+1i*2*pi*44310/fs), exp(610/fs-1i*2*pi*44310/fs)];
+        %z_accB=[exp(610/fs+1i*2*pi*13853/fs), exp(610/fs-1i*2*pi*13853/fs)];
+        plot(z_accB,'k^', 'MarkerSize', 12)
     end
     
     for i_segm=1:N_segm    
@@ -110,21 +112,37 @@ for i_obs=1:N_obs
 
         if fig_mode~=0              %plot roots
             subplot(1,2,1);
-            plot(r, 'k.', 'MarkerSize', 4)      % plot roots, 'k' stands for black colour
+            plot(real(r), imag(r), 'k.', 'MarkerSize', 5)      
             
             subplot(1,2,2);
-            plot(conjr, 'k.', 'MarkerSize', 4) 
+            plot(real(conjr), imag(conjr), 'k.', 'MarkerSize', 5) 
         end
-
+        
+        
+%         chosen=0;       % for chosen roots of B (imag>0 and abs>1) 
+%         ii=1; iii=1;    %     
+% 
+%         for k=1:length(conjr)
+%             if imag(conjr(k))>0
+%                 implus(ii)=conjr(k);  
+%                 if abs(implus(ii))>1      
+%                 chosen(iii)=implus(ii); 
+%                 iii=iii+1;
+%                 end
+%                 ii=ii+1;
+%             end
+%         end
+        
+        
         kk=1;
         for ii=1:length(r)
-           if imag(r(ii))>=0     
+           if imag(r(ii))>0     
                 if atan(imag(r(ii))/real(r(ii)))/(2*pi*1/fs)>=0
                     freqs(i_segm,kk,i_obs)=atan(imag(r(ii))/real(r(ii)))/(2*pi*1/fs);
-                    alphas(i_segm,kk,i_obs)=log(sqrt(imag(r(ii))*imag(r(ii))+real(r(ii))*real(r(ii))))/(1/fs);
+                    alphas(i_segm,kk,i_obs)=-log(sqrt(imag(r(ii))*imag(r(ii))+real(r(ii))*real(r(ii))))/(1/fs);
                 else
                     freqs(i_segm,kk,i_obs)=fs/2+atan(imag(r(ii))/real(r(ii)))/(2*pi*1/fs);
-                    alphas(i_segm,kk,i_obs)=log(sqrt(imag(r(ii))*imag(r(ii))+real(r(ii))*real(r(ii))))/(1/fs);
+                    alphas(i_segm,kk,i_obs)=-log(sqrt(imag(r(ii))*imag(r(ii))+real(r(ii))*real(r(ii))))/(1/fs);
                 end
            kk=kk+1;
            end
