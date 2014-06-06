@@ -1,20 +1,18 @@
-function f_est = weightaver( freqs,segSNR,f2,f1 )
+function f_est= weightaver(freqs,segSNR,SNRlevel)
 %weightaver Takes weighted average of f estimate in MProny
-%   Detailed explanation goes here
+%   TODO: Detailed explanation goes here
+%   freqs should be one column
+%   output is frequency estimate depending on number of segments to take
+%   weighted average
+%   Note that in this function data with SNR=0 or SNR<SNRlevel does not 
+%   change result, because fi*0=0
 
-% TODO: Add deleting zero frequencies, complete this function
-% TODO: Create new function to estimate error for ployharmnic  signal 
-kk=1;
-freqs1=0;
-segSNR1=0;
-for k=1:length(freqs)
-    %if freqs(k)~=0
-    if ((freqs(k)<f2)&&(freqs(k)>f1))
-        freqs1(kk)=freqs(k);
-        segSNR1(kk)=segSNR(k);
-        kk=kk+1;
-    end
+f_est=[];
+if (SNRlevel~=0)
+    segSNR(segSNR<SNRlevel)=0;
 end
-f_est=sum(freqs1.*segSNR1)/sum(segSNR1);
+for k=1:length(segSNR)
+    f_est(k,1)=sum(freqs(1:k,1).*segSNR(1:k,1))/sum(segSNR(1:k,1));
+end
 end
 
