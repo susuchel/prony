@@ -89,17 +89,36 @@ for i_obs=1:N_obs
     
     
         % prony procedure starts
+%TODO: consider gamma for improving results
         % toeplitz matrix
         Xpf=toeplitz(S(p:N_samp-1),S(p:-1:1)); % forward
         Xpb=toeplitz(S(p+1:N_samp),S(p+1:-1:2)); % backward
 
-        % toeplitz vector
+%         % SVD of Xpf, deleting noise components
+%         [U,Sigma,V] = svd(Xpf);
+%         Vh=ctranspose(V);
+%         SSS=Sigma;
+%         Sigma(:,q+1:p)=[];
+%         Vh(q+1:p,:)=[];
+%         improvedXpf=U*Sigma*Vh;
+        
+%         % the same for Xpb
+%         [U,Sigma,V] = svd(Xpb);
+%         Vh=ctranspose(V);
+%         Sigma(:,q+1:p)=[];
+%         Vh(q+1:p,:)=[];
+%         improvedXpb=U*Sigma*Vh;
+        
+        % toeplitz vectors
         xpf=(S(p+1:N_samp)); % forward
         xpb=(S(1:N_samp-p)); % backward
 
         % linear prediction coefficients 
         apf=-pinv(Xpf)*xpf; % forward
         apb=-pinv(Xpb)*xpb; % backward
+        
+%         apf=-pinv(improvedXpf)*xpf; % forward
+%         apb=-pinv(improvedXpb)*xpb; % backward
 
         % roots of characteristic polynomial 
         A=[1, transpose(apf(1:p))]; % forward
