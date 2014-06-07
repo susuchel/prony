@@ -1,4 +1,4 @@
-function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,eps,fig_mode, hist_mode, filename)
+function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,eps,svd_mode,fig_mode, hist_mode, filename)
 %MProny Modified Prony procedure 
 %   Calculates frequencies and damping factors of a signal
 %   Uses least squares procedure for a signal
@@ -17,6 +17,7 @@ function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,eps,fig_mo
 %               should be 2*n, where n - number of sinusoidals)
 %   N_samp      - number of samples to use for estimation
 %   eps         - epsilon, difference btw roots of 'A' and 'B'
+%   svd_mode    - if =0, then method without SVD
 %   fig_mode    - to plot or not to plot roots of polynomial, 
 %               if fig_mode~=0, then function plots roots on figure(10*i_obs+1)
 %               roots are plotted for each segment, number of roots is equal to p
@@ -94,32 +95,35 @@ for i_obs=1:N_obs
         Xpf=toeplitz(S(p:N_samp-1),S(p:-1:1)); % forward
         Xpb=toeplitz(S(p+1:N_samp),S(p+1:-1:2)); % backward
 
-%         % SVD of Xpf, deleting noise components
-%         [U,Sigma,V] = svd(Xpf);
-%         Vh=ctranspose(V);
-%         SSS=Sigma;
-%         Sigma(:,q+1:p)=[];
-%         Vh(q+1:p,:)=[];
-%         improvedXpf=U*Sigma*Vh;
-        
-%         % the same for Xpb
-%         [U,Sigma,V] = svd(Xpb);
-%         Vh=ctranspose(V);
-%         Sigma(:,q+1:p)=[];
-%         Vh(q+1:p,:)=[];
-%         improvedXpb=U*Sigma*Vh;
-        
         % toeplitz vectors
         xpf=(S(p+1:N_samp)); % forward
         xpb=(S(1:N_samp-p)); % backward
-
-        % linear prediction coefficients 
-        apf=-pinv(Xpf)*xpf; % forward
-        apb=-pinv(Xpb)*xpb; % backward
         
-%         apf=-pinv(improvedXpf)*xpf; % forward
-%         apb=-pinv(improvedXpb)*xpb; % backward
-
+        if (svd_mode~=0)
+            % SVD of Xpf, deleting noise components
+            [U,Sigma,V] = svd(Xpf);
+            Vh=ctranspose(V);
+            SSS=Sigma;
+            Sigma(:,q+1:p)=[];
+            Vh(q+1:p,:)=[];
+            improvedXpf=U*Sigma*Vh;
+        
+            % the same for Xpb
+            [U,Sigma,V] = svd(Xpb);
+            Vh=ctranspose(V);
+            Sigma(:,q+1:p)=[];
+            Vh(q+1:p,:)=[];
+            improvedXpb=U*Sigma*Vh;
+               
+            % linear prediction coefficients
+            apf=-pinv(improvedXpf)*xpf; % forward
+            apb=-pinv(improvedXpb)*xpb; % backward
+        else
+            % linear prediction coefficients 
+            apf=-pinv(Xpf)*xpf; % forward
+            apb=-pinv(Xpb)*xpb; % backward
+        end
+        
         % roots of characteristic polynomial 
         A=[1, transpose(apf(1:p))]; % forward
         r=roots(A);
