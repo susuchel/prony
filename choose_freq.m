@@ -17,6 +17,7 @@ function F_sorted = choose_freq(freqs,segSNR,f1,f2)
 %   F_sorted    - sorted array with two columns [frequencies, segSNR]
 %   
 
+%FIXME: if freqs contains all zeros, there will be error, should be fixed
 freqs_ch=[]; % new frequency array for chosen frequencies
 segSNR_ch=[]; % new array with corresponding SNR
 
