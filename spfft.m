@@ -31,7 +31,7 @@ Pyy = y.* conj(y)/Nfft;
 ff = (fs*(0:(Nfft-1))/Nfft)';
 
 sp=Pyy(1:Nfft/2,:); 
-ffs=ff(1:Nfft/2)/1000;
+ffs=ff(1:Nfft/2);
 
 
 if fig_mode~=0
@@ -41,6 +41,6 @@ if fig_mode~=0
         spnorm(:,k)=sp(:,k)/spmax(1,k);
     end
     figure(fig_mode);
-    plot(ffs,spnorm);
+    plot(ffs/1000,spnorm);
 end
 end
