@@ -1,4 +1,4 @@
-function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,eps,svd_mode,fig_mode, hist_mode, filename)
+function [freqs,alphas,segSNR,segSV] = MProny(signal, fs, sig, p, q, N_samp,eps,svd_mode,fig_mode, hist_mode, filename)
 %MProny Modified Prony procedure 
 %   Calculates frequencies and damping factors of a signal
 %   Uses least squares procedure for a signal
@@ -34,6 +34,7 @@ function [freqs,alphas,segSNR] = MProny(signal, fs, sig, p, q, N_samp,eps,svd_mo
 %   observations  
 %   alphas  - estimated damping factors, absolute values (positive)
 %   segSNR  - SNR of each segment
+%   TODO: add description of segSV
 %
 %   The function estimates frequencies within a segment of N_samp length,
 %   then shifts the segment by 1 sample and repeat estimation. Total
@@ -46,9 +47,9 @@ N_obs=size(signal,2); % number of observations
 freqs=zeros(N_segm,p/2,N_obs); % for each segment p/2 estimates 
                                % should be obtained
 alphas=zeros(N_segm,p/2,N_obs); % for each segment p/2 estimates 
-                               % should be obtained
-segSNR=zeros(N_segm,N_obs);  % SNR of each segment                          
-
+                                % should be obtained
+segSNR=zeros(N_segm,N_obs);     % SNR of each segment                          
+segSV=zeros(N_segm,p,N_obs);    % SV of each segment
                                       
 for i_obs=1:N_obs
     
@@ -103,7 +104,9 @@ for i_obs=1:N_obs
             % SVD of Xpf, deleting noise components
             [U,Sigma,V] = svd(Xpf);
             Vh=ctranspose(V);
-            SSS=Sigma;
+            
+            segSV(i_segm,:,i_obs)=diag(Sigma(1:p,:)); % save segSV
+                       
             Sigma(:,q+1:p)=[];
             Vh(q+1:p,:)=[];
             improvedXpf=U*Sigma*Vh;
@@ -111,6 +114,12 @@ for i_obs=1:N_obs
             % the same for Xpb
             [U,Sigma,V] = svd(Xpb);
             Vh=ctranspose(V);
+%             if i_segm==1
+%                 SSB1=Sigma(1:p,:);
+%             end
+%             if i_segm==N_segm
+%                 SSBN=diag(Sigma(1:p,:))
+%             end
             Sigma(:,q+1:p)=[];
             Vh(q+1:p,:)=[];
             improvedXpb=U*Sigma*Vh;
