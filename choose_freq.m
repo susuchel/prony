@@ -1,9 +1,11 @@
 function F_sorted = choose_freq(freqs,segSNR,f1,f2)
-%CHOOSE_EST Chooses frequency estimates within an interval
+%CHOOSE_FREQ Chooses frequency estimates within an interval
 %   choose_freq(freqs,segSNR,f1,f2) returns an array with two columns
 %   First column stands for frequencies, second is for corresponding SNR of
 %   the segment which was used to calculate that frequency
 %   The array is sorted by SNR in descending order 
+%   May be used not only for frequency, but also for damping factors
+%   estimate
 %
 %   Inputs:
 %   freqs   - frequency array of size N x M, where N is number of segments,
