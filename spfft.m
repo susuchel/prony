@@ -7,7 +7,7 @@ function [sp,ffs] = spfft (fs,signal,fig_mode)
 %   signal      - signal to analyze, must be a column, if signal is a 
 %               matrix, then fft will be applied to each coloumn
 %   fig_mode    - variable that tells whether to plot or not to plot 
-%               if fig_mode=0, then it do not plot a graph, in other case 
+%               if fig_mode=0, then it does not plot a graph, in other case 
 %               it plots on figure(fig_mode)
 %
 %   Outputs:
@@ -17,11 +17,11 @@ function [sp,ffs] = spfft (fs,signal,fig_mode)
 
 qwe=signal;
 [a,b]=size(qwe); % a is number of rows, b is number of columns
-% each column should be an implementation of the signal
-% a is number of samples in an implementation
+% each column should be an observation of the signal
+% a is number of samples of each observation
 meanqwe=mean(qwe);
 for k=1:b
-    qwe(:,k)=qwe(:,k)-meanqwe(1,k);
+    qwe(:,k)=qwe(:,k)-meanqwe(1,k); % delete mean
 end
     
 Nfft = a; % must be even
