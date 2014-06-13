@@ -29,7 +29,7 @@ function [freqs,alphas,segSNR,segSV] = MProny(signal, fs, sig, p, q, N_samp,eps,
 %   
 %   Outputs:
 %   freqs   - estimated frequencies, size of freqs is L x N x M, 
-%   where L=N_samp stands for number of segments, N=q/2 is number of 
+%   where L=N_samp stands for number of segments, N=p/2 is number of 
 %   frequencies (may be of different size), M=size(signal,2) is number of 
 %   observations  
 %   alphas  - estimated damping factors, absolute values (positive)
@@ -50,7 +50,13 @@ alphas=zeros(N_segm,p/2,N_obs); % for each segment p/2 estimates
                                 % should be obtained
 segSNR=zeros(N_segm,N_obs);     % SNR of each segment                          
 segSV=zeros(N_segm,p,N_obs);    % SV of each segment
-                                      
+
+% meansignal=mean(signal);
+% for k=1:b
+%     signal(:,k)=signal(:,k)-meansignal(1,k); % delete mean
+% end
+
+
 for i_obs=1:N_obs
     
     if fig_mode~=0  %creates figure to plot roots 
