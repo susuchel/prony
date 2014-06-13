@@ -14,11 +14,11 @@ y=sqrt(1-x.^2); plot(x,y)
 y=-sqrt(1-x.^2); plot(x,y)
 xlim([-2 2]); ylim([-2 2]);
 
-% % plot lines passing through the correct roots 
-% x=-2:0.00001:2;
-% for k=1:length(f0)
-%     y=tan(2*pi*f0(k)/fs)*x; plot(x,y)
-% end
+% plot lines passing through the correct roots 
+x=-2:0.00001:2;
+for k=1:length(f0)
+    y=tan(2*pi*f0(k)/fs)*x; plot(x,y)
+end
 
 % plot roots of forward ('A') or backward ('B') plynomial in Prony's method
 % if flag is 'AB', then plots A and B to subplots
