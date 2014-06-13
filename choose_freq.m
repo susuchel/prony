@@ -18,6 +18,7 @@ function F_sorted = choose_freq(freqs,segSNR,f1,f2)
 %   Output:
 %   F_sorted    - sorted array with two columns [frequencies, segSNR]
 %   
+% TODO: change description, because now it deals with observations
 
 %FIXME: if freqs contains all zeros, there will be error, should be fixed
 freqs_ch=[]; % new frequency array for chosen frequencies
@@ -25,20 +26,24 @@ segSNR_ch=[]; % new array with corresponding SNR
 
 kk=1;
 
-for k=1:size(freqs,2) % for each coloumn
-    for l=1:size(freqs,1) % for each row
-        if ((freqs(l,k)<=f2)&&(freqs(l,k)>=f1)) % take freq within [f1;f2]
-            freqs_ch(kk,1)=freqs(l,k);
-            segSNR_ch(kk,1)=segSNR(l,1);
-            kk=kk+1;
+for j=1:size(freqs,3)   % for each observation (third dim) in freqs
+    for k=1:size(freqs,2) % for each coloumn in freqs
+        for l=1:size(freqs,1) % for each row in freqs
+            if ((freqs(l,k,j)<=f2)&&(freqs(l,k,j)>=f1)) % take freq within [f1;f2]
+                freqs_ch(kk,1)=freqs(l,k,j);
+                segSNR_ch(kk,1)=segSNR(l,j);
+                kk=kk+1;
+            end
         end
     end
 end
 
 F_chosen=[freqs_ch,segSNR_ch]; % chosen data
-
-[~,IX]=sort(F_chosen(:,2),'descend'); % sort by SNR in descending order 
-F_sorted=F_chosen(IX,:); % sorted data
-
+if ~isempty(F_chosen)
+    [~,IX]=sort(F_chosen(:,2),'descend'); % sort by SNR in descending order 
+    F_sorted=F_chosen(IX,:); % sorted data
+else
+    F_sorted=[0 0];
+end
 end
 
