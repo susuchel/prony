@@ -16,17 +16,21 @@ function f0_fft = choose_fft(sp,ffs,flim)
 %TODO:  function will return f within the interval even if relative value of
 %       maximum within the interval with respect to values within other intervals 
 %       is very small. Need to be compared with some parameter, or function 
-%       may return not only frequencies but corresponding values of sp  
+%       may return not only frequencies but corresponding values of sp 
+% FIXME: change description, because now it take average over observations
 
 df=ffs(2)-ffs(1);
 [~,N_obs]=size(sp);
-f0_fft=zeros(length(flim)-1,N_obs);
+f0_fft_obs=zeros(length(flim)-1,N_obs);
 for i_obs=1:N_obs
     for k=1:(length(flim)-1)
         fftemp=ffs(flim(k)/df+1:flim(k+1)/df+1,1);
-        f0_fft(k,i_obs)=fftemp(sp(flim(k)/df+1:flim(k+1)/df+1,i_obs)==max(sp(flim(k)/df+1:flim(k+1)/df+1,i_obs)),1);
+        f0_fft_obs(k,i_obs)=fftemp(sp(flim(k)/df+1:flim(k+1)/df+1,i_obs)==max(sp(flim(k)/df+1:flim(k+1)/df+1,i_obs)),1);
     end
 end
-
+if N_obs~=1
+    f0_fft=mean(f0_fft_obs'); % take mean over obseravtions
+else
+    f0_fft=f0_fft_obs';
 end
 
