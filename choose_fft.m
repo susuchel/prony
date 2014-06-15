@@ -1,4 +1,4 @@
-function f0_fft = choose_fft(sp,ffs,flim)
+function [f0_fft,A0_fft] = choose_fft(sp,ffs,flim)
 %CHOOSE_FFT Determines frequency estimates by FFT within intervals
 %   choose_fft(spfft,ffs,flim) returns an array of frequency estimates 
 %   within intervals managed by flims
@@ -22,15 +22,20 @@ function f0_fft = choose_fft(sp,ffs,flim)
 df=ffs(2)-ffs(1);
 [~,N_obs]=size(sp);
 f0_fft_obs=zeros(length(flim)-1,N_obs);
+A0_fft_obs=zeros(length(flim)-1,N_obs);
 for i_obs=1:N_obs
     for k=1:(length(flim)-1)
-        fftemp=ffs(flim(k)/df+1:flim(k+1)/df+1,1);
-        f0_fft_obs(k,i_obs)=fftemp(sp(flim(k)/df+1:flim(k+1)/df+1,i_obs)==max(sp(flim(k)/df+1:flim(k+1)/df+1,i_obs)),1);
+        fftemp=ffs(uint16(flim(k)/df+1):uint16(flim(k+1)/df+1),1);
+        A0_fft_obs(k,i_obs)=max(sp(uint16(flim(k)/df+1):uint16(flim(k+1)/df+1),i_obs))/max(sp(:,i_obs));
+        f0_fft_obs(k,i_obs)=fftemp(sp(uint16(flim(k)/df+1):uint16(flim(k+1)/df+1),i_obs)==max(sp(uint16(flim(k)/df+1):uint16(flim(k+1)/df+1),i_obs)),1);
+            
     end
 end
 if N_obs~=1
     f0_fft=mean(f0_fft_obs'); % take mean over obseravtions
+    A0_fft=mean(A0_fft_obs');
 else
     f0_fft=f0_fft_obs';
+    A0_fft=A0_fft_obs';
 end
 
