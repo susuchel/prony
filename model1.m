@@ -22,7 +22,7 @@ function [mod,sig] = model1 (fs, f0, alfa, N_mod,SNR, N_obs)
 %
 %   Each column of the result is an observation, number of rows=number
 %   of samples
-
+%   TODO: change description because now sig is a vector
 
 % define default values, works if input argument is empty
 if isempty(fs)
@@ -51,7 +51,7 @@ t_mod=(0:1/fs:(N_mod-1)/fs); % descrete time
 A_mod=zeros(1,n_freq);  
 fi_mod=zeros(1,n_freq);
 for k=1:n_freq 
-    A_mod(1,k)=0.0249; % magnitudes of all components are same 
+    A_mod(1,k)=0.00249; % magnitudes of all components are same 
     fi_mod(1,k)=0; % initial phases of components are same and equal to zero
     % further idea is to use random A_mod and fi_mod
 end
@@ -62,13 +62,15 @@ for k=1:n_freq
 end
 
 mod=zeros(N_obs,N_mod); % corresponds to the model with noise
-sig=0;
+sig=zeros(N_obs,1);
+sig1=0;
 if (SNR==0) 
     mod=mods;
 else
-    sig=sqrt((sum(mods.^2))/(N_mod*10^(SNR/10))); % STD of noise, depending on SNR
+    sig1=sqrt((sum(mods.^2))/(N_mod*10^(SNR/10))); % STD of noise, depending on SNR
     for k=1:N_obs
-        mod(k,:)=mods(1,:)+sig*randn(1,N_mod);
+        mod(k,:)=mods(1,:)+sig1*randn(1,N_mod);
+        sig(k,1)=sig1;
     end
 end
  mod=mod'; % 

@@ -10,8 +10,7 @@ function [freqs,alphas,segSNR,segSV] = MProny(signal, fs, sig, p, q, N_samp,eps,
 %               observation, number of raws = length of the signal 
 %   fs          - sampling frequency
 %   sig         - std of noise of a signal, may be different for each
-%               observation, but now it is scalar (to be changed when 
-%               analyzing real signals)
+%               observation
 %   p           - model order, higher than expected number of exponentials
 %   q           - expected number of exponentials (for real signals 
 %               should be 2*n, where n - number of sinusoidals)
@@ -92,7 +91,7 @@ for i_obs=1:N_obs
         for k=1:N_samp      %loop to obtain segment S
             S(k,1)=signal(k+i_segm-1,i_obs); 
         end
-        segSNR(i_segm,i_obs) = calc_SNR2 (S,sig); % suppose sig is a scalar
+        segSNR(i_segm,i_obs) = calc_SNR2 (S,sig(i_obs));
         %SNR_S(i_segm,1)=10*log10(sum(S.*S)/(sig*sig*N_samp));
     
     
@@ -186,10 +185,12 @@ for i_obs=1:N_obs
         end
     end
     
-    if hist_mode~=0
-        figure(10*i_obs+2);
-        hist(freqs(:,:,i_obs), 1:50:50000);
-    end
+
+end
+
+if hist_mode~=0
+    figure(12);
+    hist(freqs, 1:50:100000);
 end
 
 if filename~=0
